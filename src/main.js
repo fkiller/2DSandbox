@@ -7,21 +7,6 @@ var cocos = require('cocos2d'),
     box2d = require('box2d');
 
 
-var b2Vec2          = box2d.Common.Math.b2Vec2,
-    b2AABB          = box2d.Collision.b2AABB,
-    b2BodyDef       = box2d.Dynamics.b2BodyDef,
-    b2Body          = box2d.Dynamics.b2Body,
-    b2FixtureDef    = box2d.Dynamics.b2FixtureDef,
-    b2Fixture       = box2d.Dynamics.b2Fixture,
-    b2World         = box2d.Dynamics.b2World,
-    b2MassData      = box2d.Collision.Shapes.b2MassData,
-    b2PolygonShape  = box2d.Collision.Shapes.b2PolygonShape,
-    b2CircleShape   = box2d.Collision.Shapes.b2CircleShape,
-    b2DebugDraw     = box2d.Dynamics.b2DebugDraw,
-    b2MouseJointDef = box2d.Dynamics.Joints.b2MouseJointDef;
-
-
-
 // Create a new layer
 var PhysicsDemo = cocos.nodes.Layer.extend({
     world: null,
@@ -81,22 +66,22 @@ var PhysicsDemo = cocos.nodes.Layer.extend({
     },
 
     demo: function() {
-        var world = new b2World(
-            new b2Vec2(0, 10),    //gravity
+        var world = new box2d.b2World(
+            new box2d.b2Vec2(0, 10),    //gravity
             true                  //allow sleep
         );
         this.set('world', world);
 
-        var fixDef = new b2FixtureDef;
+        var fixDef = new box2d.b2FixtureDef;
         fixDef.density = 1.0;
         fixDef.friction = 0.5;
         fixDef.restitution = 0.2;
 
-        var bodyDef = new b2BodyDef;
+        var bodyDef = new box2d.b2BodyDef;
 
         //create ground
-        bodyDef.type = b2Body.b2_staticBody;
-        fixDef.shape = new b2PolygonShape;
+        bodyDef.type = box2d.b2Body.b2_staticBody;
+        fixDef.shape = new box2d.b2PolygonShape;
         fixDef.shape.SetAsBox(20, 2);
         bodyDef.position.Set(10, 400 / 30 + 2);
         world.CreateBody(bodyDef).CreateFixture(fixDef);
@@ -110,7 +95,7 @@ var PhysicsDemo = cocos.nodes.Layer.extend({
 
 
         //create some objects
-        bodyDef.type = b2Body.b2_dynamicBody;
+        bodyDef.type = box2d.b2Body.b2_dynamicBody;
         for (var i = 0; i < 10; ++i) {
             var sprite;
             bodyDef.position.x = Math.random() * 10;
@@ -118,11 +103,11 @@ var PhysicsDemo = cocos.nodes.Layer.extend({
             var scale = (Math.random() + 0.5),
                 width = scale * 32;
             if (Math.random() > 0.5) {
-                fixDef.shape = new b2PolygonShape;
+                fixDef.shape = new box2d.b2PolygonShape;
                 fixDef.shape.SetAsBox(width/30, width/30);
                 sprite = this.createCrate(new geo.Point(bodyDef.position.x * 30, bodyDef.position.y * 30), scale);
             } else {
-                fixDef.shape = new b2CircleShape(width/30);
+                fixDef.shape = new box2d.b2CircleShape(width/30);
                 sprite = this.createBall(new geo.Point(bodyDef.position.x * 30, bodyDef.position.y * 30), scale);
             }
 
@@ -134,28 +119,30 @@ var PhysicsDemo = cocos.nodes.Layer.extend({
 
 
 
+        /*
         //setup debug draw
-        var debugDraw = new b2DebugDraw();
+        var debugDraw = new box2d.b2DebugDraw();
             debugDraw.SetSprite(document.getElementById('debug-canvas').getContext("2d"));
             debugDraw.SetDrawScale(30.0);
             debugDraw.SetFillAlpha(0.5);
             debugDraw.SetLineThickness(1.0);
-            debugDraw.SetFlags(b2DebugDraw.e_shapeBit | b2DebugDraw.e_jointBit);
+            debugDraw.SetFlags(box2d.b2DebugDraw.e_shapeBit | box2d.b2DebugDraw.e_jointBit);
             world.SetDebugDraw(debugDraw);
+        */
     }, 
 
     getBodyAtPoint: function (point) {
         point = new geo.Point(point.x /30, point.y /30);
         var world = this.get('world');
-        var mousePVec = new b2Vec2(point.x, point.y);
-        var aabb = new b2AABB();
+        var mousePVec = new box2d.b2Vec2(point.x, point.y);
+        var aabb = new box2d.b2AABB();
         aabb.lowerBound.Set(point.x - 0.001, point.y - 0.001);
         aabb.upperBound.Set(point.x + 0.001, point.y + 0.001);
 
 
         var self = this;
         function getBodyCB(fixture) {
-            if(fixture.GetBody().GetType() != b2Body.b2_staticBody) {
+            if(fixture.GetBody().GetType() != box2d.b2Body.b2_staticBody) {
                 if(fixture.GetShape().TestPoint(fixture.GetBody().GetTransform(), mousePVec)) {
                     self.set('selectedBody', fixture.GetBody());
                     return false;
@@ -180,7 +167,7 @@ var PhysicsDemo = cocos.nodes.Layer.extend({
         if (!mouseJoint) {
             var body = this.getBodyAtPoint(point);
             if(body) {
-                var md = new b2MouseJointDef();
+                var md = new box2d.b2MouseJointDef();
                 md.bodyA = world.GetGroundBody();
                 md.bodyB = body;
                 md.target.Set(point.x /30, point.y /30);
@@ -199,7 +186,7 @@ var PhysicsDemo = cocos.nodes.Layer.extend({
             mouseJoint = this.get('mouseJoint');
 
         if (mouseJoint) {
-            mouseJoint.SetTarget(new b2Vec2(point.x /30, point.y /30));
+            mouseJoint.SetTarget(new box2d.b2Vec2(point.x /30, point.y /30));
         }
     },
 
