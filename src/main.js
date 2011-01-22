@@ -1,4 +1,3 @@
-
 // Import the cocos2d module
 var cocos = require('cocos2d'),
 // Import the geometry module
@@ -67,7 +66,7 @@ var PhysicsDemo = cocos.nodes.Layer.extend({
 
     demo: function() {
         var world = new box2d.b2World(
-            new box2d.b2Vec2(0, 10),    //gravity
+            new box2d.b2Vec2(0, -10),    //gravity
             true                  //allow sleep
         );
         this.set('world', world);
@@ -96,10 +95,10 @@ var PhysicsDemo = cocos.nodes.Layer.extend({
 
         //create some objects
         bodyDef.type = box2d.b2Body.b2_dynamicBody;
-        for (var i = 0; i < 10; ++i) {
+        for (var i = 0; i < 15; ++i) {
             var sprite;
-            bodyDef.position.x = Math.random() * 10;
-            bodyDef.position.y = Math.random() * 10;
+            bodyDef.position.x = Math.random() * 15;
+            bodyDef.position.y = Math.random() * 15;
             var scale = (Math.random() + 0.5),
                 width = scale * 32;
             if (Math.random() > 0.5) {
@@ -208,6 +207,8 @@ var director = cocos.Director.get('sharedDirector');
 
 // Attach director to our <div> element
 director.attachInView(document.getElementById('cocos2d-app'));
+
+director.set('displayFPS', true);
 
 // Create a scene
 var scene = cocos.nodes.Scene.create();
