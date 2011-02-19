@@ -15,7 +15,7 @@ var PhysicsDemo = cocos.nodes.Layer.extend({
 
     init: function() {
         // You must always call the super class version of init
-        @super;
+        PhysicsDemo.superclass.init.call(this);
 
         this.set('isMouseEnabled', true);
 
